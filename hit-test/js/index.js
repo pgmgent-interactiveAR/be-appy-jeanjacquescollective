@@ -1,23 +1,5 @@
-const loader = new THREE.GLTFLoader();
-let reticle;
-loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/reticle/reticle.gltf", function(gltf) {
-  reticle = gltf.scene;
-  reticle.visible = false;
-  scene.add(reticle);
-})
 
-let flower;
-loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/sunflower/sunflower.gltf", function(gltf) {
-  flower = gltf.scene;
-});
 
-session.addEventListener("select", (event) => {
-  if (flower) {
-    const clone = flower.clone();
-    clone.position.copy(reticle.position);
-    scene.add(clone);
-  }
-});
 
 
 async function activateXR() {
@@ -31,12 +13,19 @@ async function activateXR() {
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
   directionalLight.position.set(10, 15, 10);
   scene.add(directionalLight);
-  
+  const loader = new THREE.GLTFLoader();
+let reticle;
+loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/reticle/reticle.gltf", function(gltf) {
+  reticle = gltf.scene;
+  reticle.visible = false;
+  scene.add(reticle);
+})
 
-// Create the cube and add it to the demo scene.
-const cube = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2, 0.2, 0.2), materials);
-cube.position.set(0, 0, -1);
-scene.add(cube);
+let flower;
+loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/sunflower/sunflower.gltf", function(gltf) {
+  flower = gltf.scene;
+});
+
 // Set up the WebGLRenderer, which handles rendering to the session's base layer.
 const renderer = new THREE.WebGLRenderer({
   alpha: true,
@@ -55,6 +44,15 @@ camera.matrixAutoUpdate = false;
 const session = await navigator.xr.requestSession("immersive-ar", {requiredFeatures: ['hit-test']});
 session.updateRenderState({
   baseLayer: new XRWebGLLayer(session, gl)
+});
+
+
+session.addEventListener("select", (event) => {
+  if (flower) {
+    const clone = flower.clone();
+    clone.position.copy(reticle.position);
+    scene.add(clone);
+  }
 });
 
 // A 'local' reference space has a native origin that is located
