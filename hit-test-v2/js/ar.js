@@ -85,6 +85,7 @@ const app = () => {
 
     const onXRFrame = (time, frame) => {
       session.requestAnimationFrame(onXRFrame);
+
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
         session.renderState.baseLayer.framebuffer
