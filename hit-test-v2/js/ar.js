@@ -32,23 +32,20 @@ const app = () => {
         scene.add(reticle);
       }
     );
-    // materials for cube
-    const materials = [
-      new THREE.MeshBasicMaterial({ color: 'red' }),
-      new THREE.MeshBasicMaterial({ color: 'blue' }),
-      new THREE.MeshBasicMaterial({ color: 'green' }),
-      new THREE.MeshBasicMaterial({ color: 'purple' }),
-      new THREE.MeshBasicMaterial({ color: 'skyblue' }),
-      new THREE.MeshBasicMaterial({ color: 'darkblue' }),
-    ];
 
-    const cube = new THREE.Mesh(
-      new THREE.BoxGeometry(0.2, 0.2, 0.2),
-      materials
+    let animal;
+    loader.load(
+      '../public/capybara_ps1_style.glb',
+      function (gltf) {
+        animal = gltf.scene;
+        // animal.position.set(0,0,-2);
+        animal.scale.set(.5,.5,.5);
+        animal.rotateY(-90);
+        animal.visible = true;
+        scene.add(animal);
+      }
     );
-    // cube.position.set(0, 0, -1);
-    // scene.add(cube);
-
+    
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
       preserveDrawingBuffer: true,
@@ -69,8 +66,8 @@ const app = () => {
       baseLayer: new XRWebGLLayer(session, gl),
     });
     session.addEventListener('select', (event) => {
-      if (cube) {
-        const clone = cube.clone();
+      if (animal) {
+        const clone = animal.clone();
         clone.position.copy(reticle.position);
         scene.add(clone);
       }
@@ -94,7 +91,6 @@ const app = () => {
       const pose = frame.getViewerPose(referenceSpace);
 
       if (pose) {
-        rotateCube(cube, 0.01, 0.02);
 
         const view = pose.views[0];
 
