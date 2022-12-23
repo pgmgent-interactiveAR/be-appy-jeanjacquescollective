@@ -1,3 +1,4 @@
+import animalUrl from './capybara_ps1_style.glb?url'
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 const app = () => {
@@ -35,7 +36,7 @@ const app = () => {
 
     let animal;
     loader.load(
-      '../public/capybara_ps1_style.glb',
+      animalUrl,
       function (gltf) {
         animal = gltf.scene;
         // animal.position.set(0,0,-2);
