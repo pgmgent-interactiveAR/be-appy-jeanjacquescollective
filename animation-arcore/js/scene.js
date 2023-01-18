@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/gltfloader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import animalUrl from '../src/LowPoly-Characters.glb?url';
 const RETICLE_URL =
   'https://immersive-web.github.io/webxr-samples/media/gltf/reticle/reticle.gltf';
@@ -126,7 +126,7 @@ export const addOrSelectModel = () => {
   // camera.getWorldDirection(cameraDirection);
   // _raycaster.set(cameraPostion, cameraDirection);
   // console.log(_raycaster)
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects(modelsInScene, true);
   console.log(intersects);
   if (intersects.length > 0) {
     let object = getOriginalParentOfObject3D(intersects[0].object);

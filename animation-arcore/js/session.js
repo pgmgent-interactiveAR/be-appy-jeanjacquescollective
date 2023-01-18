@@ -13,7 +13,6 @@ import {
   updateReticle,
 } from './scene';
 
-
 export const xrButton = document.querySelector('#startAR');
 
 export const checkXR = async () => {
@@ -32,8 +31,6 @@ let session = null;
 export let referenceSpace,
   viewerSpace,
   hitTestSource = null;
-
-
 
 const checkSupportedState = () => {
   return new Promise((resolve, reject) => {
@@ -67,7 +64,13 @@ const onSessionStarted = async (session) => {
   const canvas = document.createElement('canvas');
   loaderAnim.classList.remove('hidden');
   document.body.appendChild(canvas);
-  const gl = canvas.getContext('webgl', { xrCompatible: true });
+  let gl = canvas.getContext('webgl', { xrCompatible: true });
+  // if (WEBGL.isWebGL2Available()) {
+  //   gl = canvas.getContext('webgl2', { xrCompatible: true });
+  // } else {
+  //   gl = canvas.getContext('webgl', { xrCompatible: true });
+  // }
+  // const gl = canvas.getContext('webgl', { xrCompatible: true });
   initScene(gl, session);
   session.updateRenderState({
     baseLayer: new XRWebGLLayer(session, gl),
@@ -77,7 +80,7 @@ const onSessionStarted = async (session) => {
   hitTestSource = await session.requestHitTestSource({
     space: viewerSpace,
   });
-  
+
   const onXRFrame = (time, frame) => {
     session.requestAnimationFrame(onXRFrame);
     delta = clock.getDelta();
@@ -100,12 +103,12 @@ const onSessionStarted = async (session) => {
       gl.FRAMEBUFFER,
       session.renderState.baseLayer.framebuffer
     );
-    
+
     renderer.render(scene, camera);
   };
-  
+
   session.addEventListener('select', onSelectionEvent);
   session.requestAnimationFrame(onXRFrame);
 };
 
-window.addEventListener( 'pointermove', onPointerMove );
+window.addEventListener('pointermove', onPointerMove);
