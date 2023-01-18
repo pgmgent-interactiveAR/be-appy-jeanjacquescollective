@@ -7,13 +7,49 @@
     <title>Hello WebXR!</title>
     <!-- gltf loader lib toevoegen -->
     
-  <script type="module" crossorigin src="./assets/index-15ca3a88.js"></script>
-  <link rel="stylesheet" href="./assets/index-73419c47.css">
+  <script type="module" crossorigin src="./assets/index-fb30fd5f.js"></script>
+  <link rel="stylesheet" href="./assets/index-75b1df92.css">
 </head>
 <body>
+    
+    <div class="loading hidden" id="js-loader"><div class="loader"></div></div>
     <button id="startAR">Start AR</button>
     <div id="app">
-        Clickeldeclick
+        <div id="rotateLeftButtonDiv">
+            <div id="rotateLeftButton" class="rotateActionButton">
+              <img src="./assets/icons/rotateLeft.svg" alt="Rotate left icon">
+            </div>
+          </div>
+      
+          <div id="rotateRightButtonDiv">
+            <div id="rotateRightButton" class="rotateActionButton">
+              <img src="./assets/icons/rotateRight.svg" alt="Rotate right icon">
+            </div>
+          </div>
+      
+          <div id="checkButtonDiv" class="confirmActionButtonDiv">
+            <div id="checkButton" class="confirmActionButton">
+              <img src="./assets/icons/check.svg" alt="Tick icon">
+            </div>
+          </div>
+      
+          <div id="trashButtonDiv" class="confirmActionButtonDiv">
+            <div id="trashButton" class="confirmActionButton">
+              <img src="./assets/icons/trash.svg" alt="Trash icon">
+            </div>
+          </div>
+      
+          <div id="cancelButtonDiv" class="cancelActionButtonDiv">
+            <div id="cancelButton" class="cancelActionButton">
+              <img src="./assets/icons/closeIcon.svg" alt="Close icon">
+            </div>
+          </div>
+      
+          <div id="cancelPlaceModelButtonDiv" class="cancelActionButtonDiv">
+            <div id="cancelPlaceModelButton" class="cancelActionButton">
+              <img src="./assets/icons/closeIcon.svg" alt="Close icon">
+            </div>
+          </div>
     </div>
     
 </body>
