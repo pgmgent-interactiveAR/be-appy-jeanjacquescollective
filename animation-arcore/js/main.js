@@ -1,5 +1,5 @@
 import { activateXR, checkXR, xrButton } from "./session";
-
+import { ARButton } from 'three/addons/webxr/ARButton.js';
 const init = async () => {
   try {
     const sessionSupported = await checkXR();

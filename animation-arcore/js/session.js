@@ -1,19 +1,22 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import {
-  addModel,
   camera,
   clock,
   initScene,
   mixers,
-  onPointerMove,
-  onSelectionEvent,
+  onSelectEnd,
+  onSelectStart,
   renderer,
   scene,
   updateReticle,
 } from './scene';
 
+const controls = document.getElementById('app');
+
 export const xrButton = document.querySelector('#startAR');
+
+export let canvas;
 
 export const checkXR = async () => {
   if (navigator.xr) {
@@ -24,13 +27,14 @@ export const checkXR = async () => {
 
 export const loaderAnim = document.getElementById('js-loader');
 let sessionSupported = false;
-let targetObject = null;
 
 let delta = 0;
-let session = null;
+export let session = null;
 export let referenceSpace,
   viewerSpace,
   hitTestSource = null;
+
+export let hitTestResults;
 
 const checkSupportedState = () => {
   return new Promise((resolve, reject) => {
@@ -52,7 +56,7 @@ export const activateXR = async () => {
     session = await navigator.xr.requestSession('immersive-ar', {
       optionalFeatures: ['dom-overlay'],
       requiredFeatures: ['hit-test'],
-      domOverlay: { root: document.getElementById('app') },
+      domOverlay: { root: controls },
     });
     onSessionStarted(session);
   } else {
@@ -61,16 +65,17 @@ export const activateXR = async () => {
 };
 const onSessionStarted = async (session) => {
   // create canvas and initialize WebGL Context
-  const canvas = document.createElement('canvas');
+  canvas = document.createElement('canvas');
   loaderAnim.classList.remove('hidden');
   document.body.appendChild(canvas);
-  let gl = canvas.getContext('webgl', { xrCompatible: true });
+  let gl = canvas.getContext('webgl2', { xrCompatible: true });
   // if (WEBGL.isWebGL2Available()) {
   //   gl = canvas.getContext('webgl2', { xrCompatible: true });
   // } else {
   //   gl = canvas.getContext('webgl', { xrCompatible: true });
   // }
   // const gl = canvas.getContext('webgl', { xrCompatible: true });
+  //console.log(gl);
   initScene(gl, session);
   session.updateRenderState({
     baseLayer: new XRWebGLLayer(session, gl),
@@ -87,6 +92,12 @@ const onSessionStarted = async (session) => {
     mixers.forEach((mixer, index) => {
       mixer.update(delta);
     });
+    
+    gl.bindFramebuffer(
+      gl.FRAMEBUFFER,
+      session.renderState.baseLayer.framebuffer
+    );
+
     const pose = frame.getViewerPose(referenceSpace);
 
     if (pose) {
@@ -96,19 +107,19 @@ const onSessionStarted = async (session) => {
       camera.matrix.fromArray(view.transform.matrix);
       camera.projectionMatrix.fromArray(view.projectionMatrix);
       camera.updateMatrixWorld(true);
-      const hitTestResults = frame.getHitTestResults(hitTestSource);
+      hitTestResults = frame.getHitTestResults(hitTestSource);
       updateReticle(hitTestResults, referenceSpace);
     }
-    gl.bindFramebuffer(
-      gl.FRAMEBUFFER,
-      session.renderState.baseLayer.framebuffer
-    );
 
     renderer.render(scene, camera);
   };
 
-  session.addEventListener('select', onSelectionEvent);
+  // session.addEventListener('select', onSelectionEvent);
+  session.addEventListener( 'selectstart', onSelectStart );
+  session.addEventListener( 'selectend', onSelectEnd );
+  // document.addEventListener( 'mousemove', onpointermove );
+  controls.classList.remove('hidden');
   session.requestAnimationFrame(onXRFrame);
 };
 
-window.addEventListener('pointermove', onPointerMove);
+// window.addEventListener('touchend', onPointerMove);
