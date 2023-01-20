@@ -16,6 +16,7 @@ import {
 const animatedWithBones = true;
 const testArrow = false;
 export const clock = new THREE.Clock();
+// has changed in respect to hittest
 export const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -70,6 +71,8 @@ export const initScene = (gl, session) => {
   rotateLeftButton.addEventListener('click', rotateLeftModel);
   rotateRightButton.addEventListener('click', rotateRightModel);
 
+
+  // copy this
   renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
@@ -96,6 +99,7 @@ export const initScene = (gl, session) => {
     new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
     new THREE.MeshPhongMaterial({ color: '#2d4258' })
   );
+  targetedCircle = reticle.clone();
   if (testArrow) {
     arrow = new THREE.ArrowHelper(
       raycaster.ray.direction,
@@ -111,23 +115,15 @@ export const initScene = (gl, session) => {
     modelLoaded = models[0];
     clips = gltf.animations;
     // model.position.set(0, 0, -2);
-    if (animatedWithBones) {
-      models[0].scale.set(0.5, 0.5, 0.5);
-      // let skeleton = new THREE.SkeletonHelper( model );
-      // skeleton.visible = true;
-      // scene.add(skeleton);
-    } else {
-      models[0].scale.set(0.001, 0.001, 0.001);
-    }
-
+    models[0].scale.set(0.5, 0.5, 0.5);
     models[0].rotateY(0);
     models[0].visible = true;
-    models[0].traverse((o) => {
-      if (o.isMesh) {
-        o.castShadow = true;
-        o.receiveShadow = true;
-      }
-    });
+    // models[0].traverse((o) => {
+    //   if (o.isMesh) {
+    //     o.castShadow = true;
+    //     o.receiveShadow = true;
+    //   }
+    // });
     // loaderAnim.remove();
     // scene.add(model);
   });
@@ -168,15 +164,15 @@ export function setModelLoaded(model) {
 }
 
 const getOriginalParentOfObject3D = (objectParam) => {
-  let founded = false;
+  let objectFound = false;
   let parent = null;
 
-  while (!founded) {
+  while (!objectFound) {
     //Keep moving to object parent until the parent of the object is
     //Scene. Scene parent is null
     if (objectParam.parent.parent === null) {
       parent = objectParam;
-      founded = true;
+      objectFound = true;
     } else {
       objectParam = objectParam.parent;
     }
@@ -214,13 +210,10 @@ export const getModelOnSelect = (event) => {
       }
       // object.getObjectByProperty("isSkinnedMesh", true).material.emissive.b = .5;
       targetObject = object;
-      console.log(targetedCircle)
       if(!targetedCircle || targetedCircle.parent == null){
-      targetedCircle = reticle.clone();
-      console.log(targetObject);
-      targetedCircle.position.copy(targetObject.position);
-      // targetedCircle.applyMatrix4(targetObject.matrix);
-      scene.add(targetedCircle);
+        targetedCircle.position.copy(targetObject.position);
+        // targetedCircle.applyMatrix4(targetObject.matrix);
+        scene.add(targetedCircle);
       }
       modelLoaded = null;
       showObjectSelectedDivs();
@@ -239,7 +232,7 @@ export const placeObject = (event) => {
   if (modelLoaded && reticle.visible) {
     if (clips) {
       const clone = SkeletonUtils.clone(modelLoaded);
-      //clone.position.copy(reticle.position);
+      // clone.position.copy(reticle.position);
       clone.applyMatrix4(reticle.matrix);
       const mixer = new THREE.AnimationMixer(clone);
       let skeleton = new THREE.SkeletonHelper(clone);
@@ -322,7 +315,7 @@ const startDance = (dance) => {
   mixers.forEach((mixer, index) => {
     if (mixer.getRoot() === targetObject) {
       mixer.stopAllAction();
-      console.log(mixer.getRoot());
+      // console.log(mixer.getRoot());
       const clip = THREE.AnimationClip.findByName(clips, dance);
       if (mixer.existingAction(clip) != null) {
         mixer.existingAction(clip, targetObject).play();

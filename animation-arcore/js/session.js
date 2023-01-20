@@ -155,13 +155,13 @@ const onSelectionEvent = (event) => {
   }
   if (
     event.type === 'select' &&
-    // !isCatalogueOpen &&
-    // !placeObjectButtons &&
     !objectSelectedButtons 
   ) {
    getModelOnSelect(event);
   }
 };
+
+// controller buttons
 
 export function showPlaceObjectDiv() {
   document.getElementById('checkButtonDiv').style.display = 'flex';
