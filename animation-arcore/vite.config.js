@@ -3,8 +3,6 @@ import { defineConfig } from 'vite'
 // vite.config.js
 import mkcert from 'vite-plugin-mkcert'
 
-
-
 // vite.config.js
 export default {
   base: './',
@@ -14,5 +12,4 @@ export default {
   },
   plugins: [ mkcert() ],
   server: { https: true }
-
 }

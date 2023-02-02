@@ -31,10 +31,15 @@ export let targetObject = null;
 
 export let reticle = null;
 let models = [];
+export let modelsInScene = [];
+const modelsUrl = [modelUrl, model2Url];
+
 let clips = null;
 let arrow = null;
 export let mixers = [];
-export let modelsInScene = [];
+
+
+
 
 let raycaster = new THREE.Raycaster();
 
@@ -48,14 +53,10 @@ export const initScene = (gl, session) => {
   let cancelButton = document.getElementById('cancelButton');
   let rotateLeftButton = document.getElementById('rotateLeftButton');
   let rotateRightButton = document.getElementById('rotateRightButton');
+  const danceButtonDiv = document.querySelectorAll('.danceButtonDiv');
+  // const danceButtons = document.querySelectorAll('.danceButton');
 
-  const danceButtons = document.querySelectorAll('.danceButton');
-
-  danceButtons.forEach((el) =>
-    el.addEventListener('click', (event) => {
-      startDance(event.target.getAttribute('data-el'));
-    })
-  );
+  
 
   const modelButtons = document.querySelectorAll('.modelButtons');
 
@@ -109,39 +110,20 @@ export const initScene = (gl, session) => {
     );
     scene.add(arrow);
   }
-
-  loader.load(modelUrl, function (gltf) {
-    models[0] = gltf.scene;
-    modelLoaded = models[0];
-    clips = gltf.animations;
-    // model.position.set(0, 0, -2);
-    models[0].scale.set(0.5, 0.5, 0.5);
-    models[0].rotateY(0);
-    models[0].visible = true;
-    // models[0].traverse((o) => {
-    //   if (o.isMesh) {
-    //     o.castShadow = true;
-    //     o.receiveShadow = true;
-    //   }
-    // });
-    // loaderAnim.remove();
-    // scene.add(model);
+  modelsUrl.forEach(modelUrl => {
+    loader.load(modelUrl, function (gltf) {
+      models[0] = gltf.scene;
+      modelLoaded = models[0];
+      if(clips = gltf.animations){
+        clips = gltf.animations;
+      }
+      // model.position.set(0, 0, -2);
+      models[0].scale.set(0.5, 0.5, 0.5);
+      models[0].rotateY(0);
+      models[0].visible = true;
+    });
   });
-
-  loader.load(model2Url, function (gltf) {
-    models[1] = gltf.scene;
-    // modelLoaded = model;
-    //clips = gltf.animations;
-    //model.position.set(0, 0, -2);
   
-    models[1].scale.set(0.001, 0.001, 0.001);
-
-
-    models[1].rotateY(0);
-    models[1].visible = true;
-    // loaderAnim.remove();
-    // scene.add(models[1]);
-  });
 
   reticle.matrixAutoUpdate = false;
   reticle.visible = false;
